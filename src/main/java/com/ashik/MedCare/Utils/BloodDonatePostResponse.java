@@ -11,6 +11,7 @@ public class BloodDonatePostResponse {
     private int id;
     private int userId;
     private String userName;
+    private String userImageUrl;
     private String userRole;
     private String bloodGroup;
 

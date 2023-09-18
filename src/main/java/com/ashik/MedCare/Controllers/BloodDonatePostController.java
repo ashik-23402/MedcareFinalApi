@@ -67,6 +67,7 @@ public class BloodDonatePostController {
      bloodDonatePostDto.setBloodGroup(bloodDonatePostReq.getBloodGroup());
 //     bloodDonatePostDto.setLocation(bloodDonatePostReq.getLocation());
      bloodDonatePostDto.setContact(bloodDonatePostReq.getContact());
+     bloodDonatePostDto.setAvailibility(bloodDonatePostReq.isAvailibility());
 
      Address address = user.getAddress();
 

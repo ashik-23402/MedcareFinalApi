@@ -24,4 +24,6 @@ public class UserDto {
     private List<AmbulancePost>ambulancePostList;
 
     private List<FundRaisePost>fundRaisePostList;
+
+    private String imageUrl;
 }

@@ -11,5 +11,6 @@ public class UserRequest {
     private String email;
     private AddressReq addressReq;
     private String password;
+    private String imageUrl;
 
 }

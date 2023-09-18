@@ -99,6 +99,7 @@ public class Mapper {
 
         bloodDonatePostResponse.setId(bloodDonatePostDto.getId());
         bloodDonatePostResponse.setUserId(user.getId());
+        bloodDonatePostResponse.setUserImageUrl(user.getImageUrl());
         bloodDonatePostResponse.setBloodGroup(bloodDonatePostDto.getBloodGroup());
         bloodDonatePostResponse.setAvailibility(bloodDonatePostDto.isAvailibility());
         bloodDonatePostResponse.setContact(bloodDonatePostDto.getContact());
@@ -126,6 +127,7 @@ public class Mapper {
         userDto.setFundRaisePostList(user.getFundRaisePostList());
         userDto.setRole(user.getRole());
         userDto.setId(user.getId());
+        userDto.setImageUrl(user.getImageUrl());
 
         return userDto;
     }

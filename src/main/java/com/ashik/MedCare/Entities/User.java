@@ -41,6 +41,8 @@ public class User {
     @ToString.Exclude
     private List<FundRaisePost>fundRaisePostList;
 
+    private String imageUrl;
+
 
 
 }

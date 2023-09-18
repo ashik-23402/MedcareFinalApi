@@ -79,6 +79,7 @@ public class AuthController {
         userDto.setAppointMents(new ArrayList<>());
         userDto.setFundRaisePostList(new ArrayList<>());
         userDto.setRole("ROLE_Normal");
+        userDto.setImageUrl(userRequest.getImageUrl());
 
         UserDto userDto1 =  userService.RegisterUser(userDto);
 
