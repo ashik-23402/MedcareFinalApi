@@ -2,7 +2,11 @@ package com.ashik.MedCare.Services.ServiceImplementation;
 
 import com.ashik.MedCare.DTOs.FundRaisePostDto;
 import com.ashik.MedCare.Entities.FundRaisePost;
+import com.ashik.MedCare.Entities.PostImage;
+import com.ashik.MedCare.Entities.ProvedDocument;
 import com.ashik.MedCare.Repository.FundRaisePostRepository;
+import com.ashik.MedCare.Repository.PostImageRepository;
+import com.ashik.MedCare.Repository.ProveDocumentRepository;
 import com.ashik.MedCare.Services.FundraisePostService;
 import com.ashik.MedCare.Utils.FundRaisePostUtils.FundPostPage;
 import com.ashik.MedCare.Utils.FundRaisePostUtils.FundRaisePostMapper;
@@ -17,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +29,10 @@ public class FundRaisePostServiceImpl implements FundraisePostService {
 
     @Autowired
     private FundRaisePostRepository fundRaisePostRepository;
+    @Autowired
+    private PostImageRepository postImageRepository;
+    @Autowired
+    private ProveDocumentRepository proveDocumentRepository;
 
     @Override
     public FundRaisePostDto createPost(FundRaisePostDto fundRaisePostDto) {
@@ -49,6 +58,24 @@ public class FundRaisePostServiceImpl implements FundraisePostService {
 
     @Override
     public void deletePost(Integer id) {
+
+        Optional<FundRaisePost> byId = fundRaisePostRepository.findById(id);
+
+        List<PostImage> postImages = byId.get().getPostImages();
+
+        List<ProvedDocument> proveDocuments = byId.get().getProveDocuments();
+
+
+
+        for(PostImage postImage : postImages){
+                postImageRepository.deleteById(postImage.getId());
+        }
+
+        for(ProvedDocument provedDocument : proveDocuments){
+            proveDocumentRepository.deleteById(provedDocument.getId());
+        }
+
+
 
         fundRaisePostRepository.deleteById(id);
 

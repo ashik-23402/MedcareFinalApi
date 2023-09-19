@@ -3,6 +3,7 @@ package com.ashik.MedCare.Entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,7 @@ public class FundRaisePost {
     private String title;
     private Integer amount;
     private Integer donatedAmount;
+    @Column(length = 1000)
     private String postContent;
     private boolean isApprove;
     private Date createdDate;

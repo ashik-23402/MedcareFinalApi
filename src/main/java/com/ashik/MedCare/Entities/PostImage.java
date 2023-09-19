@@ -12,7 +12,7 @@ public class PostImage {
     private int id;
 
     private String imageName;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     private FundRaisePost fundRaisePost;
 }
