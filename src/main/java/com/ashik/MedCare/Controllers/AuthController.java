@@ -208,6 +208,27 @@ public class AuthController {
     }
 
 
+    @GetMapping("/makeAdmin")
+    public ResponseEntity<GeneralResponse>makeAdmin(){
+
+        User user = new User();
+        user.setName("admin");
+        user.setImageUrl("admin.jpg");
+        user.setPassword(passwordEncoder.encode("admin"));
+        user.setRole("ROLE_ADMIN");
+        user.setEmail("admin@gmail.com");
+
+        userRepository.save(user);
+
+        GeneralResponse generalResponse = new GeneralResponse();
+        generalResponse.setMessage("admin created successfully");
+        generalResponse.setSuccess(true);
+
+        return new ResponseEntity<GeneralResponse>(generalResponse,HttpStatus.OK);
+
+    }
+
+
 
 
 }
