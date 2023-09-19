@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
         user.setBloodDonatePostList(userDto.getBloodDonatePostList());
         user.setFundRaisePostList(userDto.getFundRaisePostList());
         user.setRole(userDto.getRole());
-        user.setImageUrl(user.getImageUrl());
+        user.setImageUrl(userDto.getImageUrl());
 
 
         User save = userRepository.save(user);
