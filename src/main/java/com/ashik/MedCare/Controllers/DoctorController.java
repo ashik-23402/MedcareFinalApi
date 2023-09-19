@@ -290,6 +290,36 @@ public class DoctorController {
     }
 
 
+    @GetMapping("/doctor/getAllDoctorbySpecializationWithPge/{specialization}")
+    public ResponseEntity<DoctorPagePost> getAlldoctorByspecialization(
+            @RequestParam(name = "pageNumber",defaultValue ="0") Integer pageNumber,
+            @RequestParam(name = "pageSize",defaultValue = "1") Integer pageSize,
+            @RequestParam(name = "SortBy" ,defaultValue = "appliedTime") String SortBy,
+            @RequestParam(name = "SortDir",defaultValue = "desc") String SortDir,
+            @PathVariable String specialization ){
+
+
+        DoctorPagePost doctorPagePost = doctorServices.getAlldoctorbySpecialization(specialization,pageNumber,pageSize,SortBy,SortDir);
+
+
+        return new ResponseEntity<DoctorPagePost>(doctorPagePost,HttpStatus.OK);
+    }
+
+    @GetMapping("/doctor/getAllSpecialization")
+    public ResponseEntity<List<String>> getAlldoctorByspecialization(){
+
+
+        List<String> getallspecialization = doctorServices.getallspecialization();
+
+
+        return new ResponseEntity<List<String>>(getallspecialization,HttpStatus.OK);
+    }
+
+
+
+
+
+
 
 
 

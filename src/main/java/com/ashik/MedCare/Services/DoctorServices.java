@@ -25,6 +25,12 @@ public interface DoctorServices {
 
     public  Doctor getsingledoctor(Integer id);
 
+    DoctorPagePost getAlldoctorbySpecialization(String specialization,Integer pageNumber,Integer pageSize,
+                                                String SortBy,
+                                                String SortDir);
+
+    List<String> getallspecialization();
+
 
 
 

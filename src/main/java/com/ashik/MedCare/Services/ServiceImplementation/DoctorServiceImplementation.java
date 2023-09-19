@@ -107,5 +107,37 @@ public class DoctorServiceImplementation implements DoctorServices {
         return doctor;
     }
 
+    @Override
+    public DoctorPagePost getAlldoctorbySpecialization(String specialization,Integer pageNumber, Integer pageSize, String SortBy, String SortDir) {
+
+        Sort sort = SortDir.equalsIgnoreCase("asc")? Sort.by(SortBy).ascending():Sort.by(SortBy).descending();
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
+
+
+        Page<Doctor> bySpecialization = doctorRepository.findBySpecialization(specialization, pageable);
+
+        List<DoctorDtos> collect =
+                bySpecialization.stream().map((doctor) -> DoctorMapper.doctorToDtos(doctor, new DoctorDtos())).collect(Collectors.toList());
+
+        DoctorPagePost doctorPagePost = new DoctorPagePost();
+        doctorPagePost.setContent(collect);
+        doctorPagePost.setLastPage(bySpecialization.isLast());
+        doctorPagePost.setPageSize(bySpecialization.getSize());
+        doctorPagePost.setPageNumber(bySpecialization.getNumber());
+        doctorPagePost.setTotalPages(bySpecialization.getTotalPages());
+        doctorPagePost.setTotaleElements(bySpecialization.getNumberOfElements());
+
+        return doctorPagePost;
+    }
+
+    @Override
+    public List<String> getallspecialization() {
+
+        List<String> distinctSpecialization = doctorRepository.findDistinctSpecialization();
+
+
+        return distinctSpecialization;
+    }
+
 
 }
