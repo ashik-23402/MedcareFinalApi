@@ -17,6 +17,7 @@ public class Doctor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
+    @Column(length = 10000)
     private String description;
     private String specialization;
     private String email;

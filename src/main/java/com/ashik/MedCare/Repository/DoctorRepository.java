@@ -17,7 +17,7 @@ public interface DoctorRepository  extends JpaRepository<Doctor,Integer> {
      @Query("SELECT DISTINCT d.specialization From Doctor d")
      List<String> findDistinctSpecialization();
 
-     Page<Doctor> findBySpecialization(String specialization, Pageable pageable);
+     Page<Doctor> findBySpecializationAndApprove(String Specialization, Boolean approve, Pageable pageable);
 
 
 

@@ -95,7 +95,7 @@ public class DoctorController {
 
 
     //doctorApprovedByAdmin
-    @GetMapping("protect/doctor/approved/{id}")
+    @GetMapping("/protect/doctor/approved/{id}")
     public ResponseEntity<GeneralResponse> approveDoctor(@PathVariable Integer id){
 
         Doctor doctor = doctorServices.approveDoctor(id);
@@ -216,7 +216,7 @@ public class DoctorController {
     }
 
 
-    @PostMapping("protect/doctor/update/{doctorId}")
+    @PutMapping("/protect/doctor/update/{doctorId}")
     public ResponseEntity<DoctorDtos> updateDoctorInfo(@PathVariable Integer doctorId,
                                                        @RequestBody DoctorUpdateRequest updateRequest) {
 
@@ -313,6 +313,20 @@ public class DoctorController {
 
 
         return new ResponseEntity<List<String>>(getallspecialization,HttpStatus.OK);
+    }
+
+
+    @DeleteMapping("/protect/deleteDoctor/{doctorid}")
+    public ResponseEntity<GeneralResponse> deleteDoctor(@PathVariable Integer doctorid){
+
+        boolean b = doctorServices.deleteDoctor(doctorid);
+
+        GeneralResponse generalResponse = new GeneralResponse();
+        generalResponse.setSuccess(true);
+        generalResponse.setMessage("doctor deleted successfully ");
+
+        return new ResponseEntity<GeneralResponse>(generalResponse,HttpStatus.OK);
+
     }
 
 

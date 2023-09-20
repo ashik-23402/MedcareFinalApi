@@ -1,8 +1,14 @@
 package com.ashik.MedCare.Services.ServiceImplementation;
 
 import com.ashik.MedCare.DTOs.DoctorDtos;
+import com.ashik.MedCare.Entities.AppointMents;
 import com.ashik.MedCare.Entities.Doctor;
+import com.ashik.MedCare.Entities.DoctorAvailability;
+import com.ashik.MedCare.Entities.Slot;
+import com.ashik.MedCare.Repository.AppointmentRepository;
+import com.ashik.MedCare.Repository.DoctorAvailabilityRepository;
 import com.ashik.MedCare.Repository.DoctorRepository;
+import com.ashik.MedCare.Repository.SlotRepository;
 import com.ashik.MedCare.Services.DoctorServices;
 import com.ashik.MedCare.Utils.DoctorUtills.DoctorMapper;
 import com.ashik.MedCare.Utils.DoctorUtills.DoctorPagePost;
@@ -24,6 +30,12 @@ public class DoctorServiceImplementation implements DoctorServices {
 
     @Autowired
     private DoctorRepository doctorRepository;
+    @Autowired
+    private DoctorAvailabilityRepository doctorAvailabilityRepository;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
+    @Autowired
+    private SlotRepository slotRepository;
 
 
     @Override
@@ -114,7 +126,9 @@ public class DoctorServiceImplementation implements DoctorServices {
         Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
 
 
-        Page<Doctor> bySpecialization = doctorRepository.findBySpecialization(specialization, pageable);
+        Page<Doctor> bySpecialization = doctorRepository.findBySpecializationAndApprove(specialization,true,pageable);
+
+
 
         List<DoctorDtos> collect =
                 bySpecialization.stream().map((doctor) -> DoctorMapper.doctorToDtos(doctor, new DoctorDtos())).collect(Collectors.toList());
@@ -136,7 +150,52 @@ public class DoctorServiceImplementation implements DoctorServices {
         List<String> distinctSpecialization = doctorRepository.findDistinctSpecialization();
 
 
+
+
         return distinctSpecialization;
+    }
+
+    @Override
+    public boolean deleteDoctor(Integer id) {
+
+        Optional<Doctor> byId = doctorRepository.findById(id);
+        Doctor doctor = byId.get();
+
+
+        List<DoctorAvailability> doctorAvailabilities = doctor.getDoctorAvailabilities();
+
+        List<AppointMents> appointMents = doctor.getAppointMents();
+
+        List<Slot> slots = doctor.getSlots();
+
+        if(appointMents != null){
+            for(AppointMents appointMents1 :appointMents){
+
+                appointmentRepository.deleteById(appointMents1.getId());
+
+            }
+        }
+
+        if(slots != null){
+
+            for(Slot slot : slots){
+                slotRepository.deleteById(slot.getId());
+            }
+        }
+
+
+
+
+        for(DoctorAvailability doctorAvailability : doctorAvailabilities){
+            int id1 = doctorAvailability.getId();
+            doctorAvailabilityRepository.deleteById(id1);
+        }
+
+        doctorRepository.deleteById(id);
+
+
+
+        return true;
     }
 
 

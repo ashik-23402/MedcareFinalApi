@@ -31,6 +31,8 @@ public interface DoctorServices {
 
     List<String> getallspecialization();
 
+    public boolean deleteDoctor(Integer id);
+
 
 
 
