@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/Slot")
+@RestController("/api")
 public class SlotController {
 
     @Autowired
     private SlotRepository slotRepository;
 
-    @DeleteMapping("/delete/{slotId}")
+    @DeleteMapping("/slot/delete/{slotId}")
     public ResponseEntity<?> deleteSlot(@PathVariable Integer slotId){
 
         slotRepository.deleteById(slotId);
