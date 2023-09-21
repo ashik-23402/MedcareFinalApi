@@ -20,5 +20,8 @@ public interface DoctorRepository  extends JpaRepository<Doctor,Integer> {
      Page<Doctor> findBySpecializationAndApprove(String Specialization, Boolean approve, Pageable pageable);
 
 
+     public Doctor findByLoginUserId(Integer id);
+
+
 
 }

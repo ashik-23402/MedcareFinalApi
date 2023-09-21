@@ -116,8 +116,10 @@ public class DoctorController {
         userDto.setEmail(doctor.getEmail());
         UserDto userDto1 = userService.RegisterUser(userDto);
 
-
+        System.out.println(s);
         doctor.setLoginUserId(userDto1.getId());
+
+        doctorRepository.save(doctor);
 
         String subject = "Credential for Medcare PlatForm";
         String message = "Your user eamil is "+ userDto1.getEmail() + "Password : "+ s +" use this credential for log in";

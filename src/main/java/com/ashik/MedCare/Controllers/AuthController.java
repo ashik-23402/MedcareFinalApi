@@ -1,11 +1,15 @@
 package com.ashik.MedCare.Controllers;
 
+import com.ashik.MedCare.ApiResponse.DoctorLoginresponse;
 import com.ashik.MedCare.ApiResponse.LoginResponse;
 import com.ashik.MedCare.ApiResponse.SignUpResponse;
 import com.ashik.MedCare.Configuration.JwTokenProvider;
+import com.ashik.MedCare.DTOs.DoctorDtos;
 import com.ashik.MedCare.DTOs.UserDto;
 import com.ashik.MedCare.Entities.Address;
+import com.ashik.MedCare.Entities.Doctor;
 import com.ashik.MedCare.Entities.User;
+import com.ashik.MedCare.Repository.DoctorRepository;
 import com.ashik.MedCare.Repository.UserRepository;
 import com.ashik.MedCare.RequestObject.AddressReq;
 import com.ashik.MedCare.RequestObject.LoginRequest;
@@ -14,6 +18,7 @@ import com.ashik.MedCare.Services.ServiceImplementation.CustomUserServiceImple;
 import com.ashik.MedCare.Services.ServiceImplementation.EmailServiceImpl;
 import com.ashik.MedCare.Services.UserService;
 import com.ashik.MedCare.Utils.AuthResponse;
+import com.ashik.MedCare.Utils.DoctorUtills.DoctorMapper;
 import com.ashik.MedCare.Utils.GeneralResponse;
 import com.ashik.MedCare.Utils.Mapper;
 import com.ashik.MedCare.Utils.OTPresponse;
@@ -45,6 +50,8 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private EmailServiceImpl emailService;
+    @Autowired
+    private DoctorRepository doctorRepository;
 
 
 
@@ -128,7 +135,7 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public  ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
+    public  ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
 
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
@@ -142,7 +149,29 @@ public class AuthController {
         String name = authenticationuser.getName();
         User loggedUser = userRepository.findByEmail(name);
 
+        String role = loggedUser.getRole();
+
+
+        if(role.equals("ROLE_DOCTOR")){
+
+
+
+            Doctor byLoginUserId = doctorRepository.findByLoginUserId(loggedUser.getId());
+
+
+            DoctorDtos doctorDtos = DoctorMapper.doctorToDtos(byLoginUserId, new DoctorDtos());
+
+            DoctorLoginresponse doctorLoginresponse = new DoctorLoginresponse();
+            doctorLoginresponse.setJwtToken(jwtToken);
+            doctorLoginresponse.setAuthenticated(true);
+            doctorLoginresponse.setDoctorDtos(doctorDtos);
+
+            return new ResponseEntity<DoctorLoginresponse>(doctorLoginresponse,HttpStatus.OK);
+
+        }
+
         UserDto userDto = Mapper.userToDto(loggedUser);
+
 //        userDto.getAddress().setUser(null);
 
         LoginResponse loginResponse = new LoginResponse();
