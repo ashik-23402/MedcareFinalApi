@@ -5,10 +5,7 @@ import com.ashik.MedCare.Entities.AppointMents;
 import com.ashik.MedCare.Entities.Doctor;
 import com.ashik.MedCare.Entities.DoctorAvailability;
 import com.ashik.MedCare.Entities.Slot;
-import com.ashik.MedCare.Repository.AppointmentRepository;
-import com.ashik.MedCare.Repository.DoctorAvailabilityRepository;
-import com.ashik.MedCare.Repository.DoctorRepository;
-import com.ashik.MedCare.Repository.SlotRepository;
+import com.ashik.MedCare.Repository.*;
 import com.ashik.MedCare.Services.DoctorServices;
 import com.ashik.MedCare.Utils.DoctorUtills.DoctorMapper;
 import com.ashik.MedCare.Utils.DoctorUtills.DoctorPagePost;
@@ -36,6 +33,8 @@ public class DoctorServiceImplementation implements DoctorServices {
     private AppointmentRepository appointmentRepository;
     @Autowired
     private SlotRepository slotRepository;
+    @Autowired
+    private UserRepository userRepository;
 
 
     @Override
@@ -161,6 +160,11 @@ public class DoctorServiceImplementation implements DoctorServices {
         Optional<Doctor> byId = doctorRepository.findById(id);
         Doctor doctor = byId.get();
 
+        int loginUserId = doctor.getLoginUserId();
+
+
+
+
 
         List<DoctorAvailability> doctorAvailabilities = doctor.getDoctorAvailabilities();
 
@@ -190,6 +194,8 @@ public class DoctorServiceImplementation implements DoctorServices {
             int id1 = doctorAvailability.getId();
             doctorAvailabilityRepository.deleteById(id1);
         }
+
+        userRepository.deleteById(loginUserId);
 
         doctorRepository.deleteById(id);
 
