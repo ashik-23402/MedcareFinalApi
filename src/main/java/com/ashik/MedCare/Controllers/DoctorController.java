@@ -29,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -212,6 +213,7 @@ public class DoctorController {
     public  ResponseEntity<List<SlotDto>> getSingleDoctorSlots(@PathVariable Integer doctorId){
 
         List<SlotDto> allSlotofSingleDoctor = slotServices.getAllSlotofSingleDoctor(doctorId);
+
 
         return  new ResponseEntity<List<SlotDto>>(allSlotofSingleDoctor,HttpStatus.OK);
 
