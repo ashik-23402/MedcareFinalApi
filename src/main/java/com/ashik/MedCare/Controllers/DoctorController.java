@@ -131,12 +131,17 @@ public class DoctorController {
 
         List<DoctorAvailability> doctorAvailabilities = doctor.getDoctorAvailabilities();
 
+
+
         for(DoctorAvailability doctorAvailability : doctorAvailabilities){
             LocalTime startTime = doctorAvailability.getStartTime();
             LocalTime endTime = doctorAvailability.getEndTime();
             String weekDays = doctorAvailability.getWeekDays().toUpperCase();
 
             List<LocalDate> localDates = SlotUtil.upcomingAllDates(weekDays);
+
+//            System.out.println(localDates);
+
 
             for(LocalDate localDate : localDates){
                 LocalTime temp = startTime;
@@ -236,7 +241,11 @@ public class DoctorController {
 
         List<DoctorAvailability> doctorAvailabilities1 = getsingledoctor.getDoctorAvailabilities();
 
-       doctorAvailabilityRepository.deleteAll(doctorAvailabilities1);
+        List<Slot> slots = getsingledoctor.getSlots();
+
+
+        slotRepository.deleteAll(slots);
+        doctorAvailabilityRepository.deleteAll(doctorAvailabilities1);
 
        for (DoctorAvailability doctorAvailability : doctorAvailabilities){
            doctorAvailability.setDoctor(getsingledoctor);
