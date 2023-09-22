@@ -18,7 +18,7 @@ public class SlotUtil {
         String wkDay = weekDay.toUpperCase();
         LocalDate localDate = LocalDate.now();
         int year = localDate.getYear();
-        int month = localDate.getMonthValue()+1;
+        int month = localDate.getMonthValue();
 
         List<LocalDate> upsomingweekday = new ArrayList<>();
 
@@ -28,7 +28,7 @@ public class SlotUtil {
 
         LocalDate nextday = firstday;
 
-        while (nextday.getMonthValue()<= month){
+        while (nextday.getMonthValue()<= month+1){
             upsomingweekday.add(nextday);
             nextday = nextday.plusWeeks(1);
         }
