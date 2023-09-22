@@ -17,7 +17,7 @@ public class FundRaisePost {
     private String title;
     private Integer amount;
     private Integer donatedAmount;
-    @Column(length = 1000)
+    @Column(length = 10000)
     private String postContent;
     private boolean isApprove;
     private Date createdDate;

@@ -51,6 +51,8 @@ public class AppointmentsController {
         AppointmentResponse appointmentResponse = AppointmentMapper.dtoToResponse(appoinMent, new AppointmentResponse());
 
 
+
+
         return new ResponseEntity<AppointmentResponse>(appointmentResponse, HttpStatus.OK);
 
     }

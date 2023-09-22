@@ -48,6 +48,8 @@ public class BloodDonatePostController {
 
      BloodDonatePostDto postDto = bloodDonatePostServices.createPost(bloodDonatePostDto);
 
+     System.out.println(user.getImageUrl());
+
      BloodDonatePostResponse bloodDonatePostResponse = Mapper.bloodDonatePostResponseMapper(postDto,user);
 
 
