@@ -16,4 +16,6 @@ public class OtpStore {
     private Integer otp;
 
     private Integer userId;
+
+    private String temptoken;
 }

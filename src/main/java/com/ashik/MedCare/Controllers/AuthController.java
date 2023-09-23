@@ -24,6 +24,7 @@ import com.ashik.MedCare.Utils.DoctorUtills.DoctorMapper;
 import com.ashik.MedCare.Utils.GeneralResponse;
 import com.ashik.MedCare.Utils.Mapper;
 import com.ashik.MedCare.Utils.OTPresponse;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -241,10 +242,12 @@ public class AuthController {
             otpStoreRepository.delete(byUserId);
         }
 
+        String s = RandomStringUtils.randomAlphanumeric(8);
 
         OtpStore otpStore = new OtpStore();
         otpStore.setOtp(otp);
         otpStore.setUserId(user.getId());
+        otpStore.setTemptoken(s);
 
         otpStoreRepository.save(otpStore);
 
@@ -253,6 +256,30 @@ public class AuthController {
 
 
     }
+
+
+
+    @GetMapping("/validateOtp/{otp}")
+    public  ResponseEntity<?>validateOtp(@PathVariable Integer otp){
+
+        OtpStore byOtp = otpStoreRepository.findByOtp(otp);
+
+        GeneralResponse generalResponse = new GeneralResponse();
+
+        if(byOtp == null){
+            generalResponse.setMessage("Invalid Otp");
+            generalResponse.setSuccess(false);
+
+            return  new ResponseEntity<>(generalResponse,HttpStatus.NOT_FOUND);
+        }
+
+        generalResponse.setMessage(byOtp.getTemptoken());
+        generalResponse.setSuccess(true);
+
+        return new ResponseEntity<>(generalResponse,HttpStatus.ACCEPTED);
+
+    }
+
 
     @PostMapping("/resetpassword/{newpassword}")
     public ResponseEntity<GeneralResponse> ResetPassword(
@@ -277,8 +304,11 @@ public class AuthController {
     }
 
 
-    @PostMapping("/forgotPassword/resetpassword/{otp}/{newpassword}")
-    public ResponseEntity<GeneralResponse> ForgotResetPassword(@PathVariable Integer otp,
+
+
+
+    @PostMapping("/forgotPassword/resetpassword/{tempToken}/{newpassword}")
+    public ResponseEntity<GeneralResponse> ForgotResetPassword(@PathVariable String tempToken,
                                                          @PathVariable String newpassword
                                                          ){
 
@@ -290,7 +320,8 @@ public class AuthController {
 //        User byEmail = userRepository.findByEmail(email);
         GeneralResponse generalResponse = new GeneralResponse();
 
-        OtpStore byOtp = otpStoreRepository.findByOtp(otp);
+        OtpStore byOtp= otpStoreRepository.findByTemptoken(tempToken);
+
 
         if(byOtp == null){
             generalResponse.setMessage("Invalid Otp");
@@ -302,7 +333,7 @@ public class AuthController {
         Optional<User> byId = userRepository.findById(userid);
 
         if(byId.get() == null){
-            generalResponse.setMessage("Invalid Otp");
+            generalResponse.setMessage("Invalid tempToekn");
             generalResponse.setSuccess(false);
             return new ResponseEntity<GeneralResponse>(generalResponse,HttpStatus.BAD_REQUEST);
 

@@ -10,4 +10,6 @@ public interface OtpStoreRepository  extends JpaRepository<OtpStore,Integer> {
     public OtpStore findByUserId(Integer id);
     public OtpStore findByOtp(Integer otp);
 
+    public OtpStore findByTemptoken(String tempToken);
+
 }
