@@ -8,8 +8,10 @@ import com.ashik.MedCare.DTOs.DoctorDtos;
 import com.ashik.MedCare.DTOs.UserDto;
 import com.ashik.MedCare.Entities.Address;
 import com.ashik.MedCare.Entities.Doctor;
+import com.ashik.MedCare.Entities.OtpStore;
 import com.ashik.MedCare.Entities.User;
 import com.ashik.MedCare.Repository.DoctorRepository;
+import com.ashik.MedCare.Repository.OtpStoreRepository;
 import com.ashik.MedCare.Repository.UserRepository;
 import com.ashik.MedCare.RequestObject.AddressReq;
 import com.ashik.MedCare.RequestObject.LoginRequest;
@@ -34,6 +36,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -52,6 +56,10 @@ public class AuthController {
     private EmailServiceImpl emailService;
     @Autowired
     private DoctorRepository doctorRepository;
+    @Autowired
+    private OtpStoreRepository otpStoreRepository;
+
+
 
 
 
@@ -194,47 +202,134 @@ public class AuthController {
 
 
     @PostMapping("/sendOtp/{email}")
-    public ResponseEntity<OTPresponse> sendOtpForPasswordReset(@PathVariable String email){
+    public ResponseEntity<?> sendOtpForPasswordReset(@PathVariable String email){
 
         User user = userRepository.findByEmail(email);
-        OTPresponse otPresponse = new OTPresponse();
+
+        GeneralResponse generalResponse = new GeneralResponse();
 
         if(user == null){
-            otPresponse.setOtp(null);
-            otPresponse.setMessge("user not found with this error");
+           generalResponse.setMessage("user not found");
+           generalResponse.setSuccess(false);
 
-            return new  ResponseEntity<OTPresponse>(otPresponse,HttpStatus.BAD_REQUEST);
+            return new  ResponseEntity<>(generalResponse,HttpStatus.BAD_REQUEST);
 
         }
 
-        Integer otp = 78955;
+        Random random = new Random();
+
+        int min = 10000;
+        int max = 99999;
+        int randomInt = random.nextInt(max-min+1)+min;
+
+//        System.out.println(randomInt);
+
+        Integer otp = randomInt;
         String subject = " Otp for reset password";
 
         String mssg = "YOUR otp is : "+ Integer.toString(otp);
 
+
+
         emailService.SendEmail(email,subject,mssg);
-        otPresponse.setMessge("email sent sucessfully");
-        otPresponse.setOtp(otp);
-        return new ResponseEntity<OTPresponse>(otPresponse,HttpStatus.OK);
+        generalResponse.setMessage("top send on mail successfully");
+        generalResponse.setSuccess(true);
+
+        OtpStore byUserId = otpStoreRepository.findByUserId(user.getId());
+
+        if(byUserId != null){
+            otpStoreRepository.delete(byUserId);
+        }
+
+
+        OtpStore otpStore = new OtpStore();
+        otpStore.setOtp(otp);
+        otpStore.setUserId(user.getId());
+
+        otpStoreRepository.save(otpStore);
+
+
+        return new ResponseEntity<>(generalResponse,HttpStatus.OK);
 
 
     }
 
-    @PostMapping("/resetpassword/{email}/{newpassword}")
-    public ResponseEntity<GeneralResponse> ResetPassword(@PathVariable String email, @PathVariable String newpassword){
+    @PostMapping("/resetpassword/{newpassword}")
+    public ResponseEntity<GeneralResponse> ResetPassword(
+                                                         @PathVariable String newpassword,
+                                                         @RequestHeader ("Authorization") String jwt){
 
-        User byEmail = userRepository.findByEmail(email);
+
+        User byEmail = userService.findUserByJwt(jwt);
+
+//        User byEmail = userRepository.findByEmail(email);
+        GeneralResponse generalResponse = new GeneralResponse();
 
         byEmail.setPassword(passwordEncoder.encode(newpassword));
 
         userRepository.save(byEmail);
-        GeneralResponse generalResponse = new GeneralResponse();
+
         generalResponse.setMessage("password updated");
         generalResponse.setSuccess(true);
         return new ResponseEntity<GeneralResponse>(generalResponse,HttpStatus.OK);
 
 
     }
+
+
+    @PostMapping("/forgotPassword/resetpassword/{otp}/{newpassword}")
+    public ResponseEntity<GeneralResponse> ForgotResetPassword(@PathVariable Integer otp,
+                                                         @PathVariable String newpassword
+                                                         ){
+
+
+
+
+
+
+//        User byEmail = userRepository.findByEmail(email);
+        GeneralResponse generalResponse = new GeneralResponse();
+
+        OtpStore byOtp = otpStoreRepository.findByOtp(otp);
+
+        if(byOtp == null){
+            generalResponse.setMessage("Invalid Otp");
+            generalResponse.setSuccess(false);
+            return new ResponseEntity<GeneralResponse>(generalResponse,HttpStatus.BAD_REQUEST);
+        }
+
+        Integer userid = byOtp.getUserId();
+        Optional<User> byId = userRepository.findById(userid);
+
+        if(byId.get() == null){
+            generalResponse.setMessage("Invalid Otp");
+            generalResponse.setSuccess(false);
+            return new ResponseEntity<GeneralResponse>(generalResponse,HttpStatus.BAD_REQUEST);
+
+        }
+
+        User user = byId.get();
+
+        user.setPassword(passwordEncoder.encode(newpassword));
+
+
+        userRepository.save(user);
+
+
+//        userRepository.save(byEmail);
+
+        generalResponse.setMessage("password updated");
+        generalResponse.setSuccess(true);
+        return new ResponseEntity<GeneralResponse>(generalResponse,HttpStatus.OK);
+
+
+    }
+
+
+
+
+
+
 
 
     @GetMapping("/makeAdmin")
