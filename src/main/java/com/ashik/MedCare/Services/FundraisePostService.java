@@ -20,6 +20,7 @@ public interface FundraisePostService {
     public List<FundRaiseResponse> getAllbyApproveStatuswithSort(boolean approve, String sortBy, String sortDir);
     public FundPostPage getAllbyApproveStatuswithSort(boolean approve , Integer pageSize, Integer pageNumber, String sortBy, String sortDir);
 
+    public FundPostPage getAllPostByUserIdAndApprove(Integer userid, Integer pageSize, Integer pageNumber, String sortBy, String sortDir,Boolean approved);
 
 
 

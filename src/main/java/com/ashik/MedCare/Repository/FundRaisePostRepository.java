@@ -13,4 +13,6 @@ public interface FundRaisePostRepository extends JpaRepository<FundRaisePost,Int
 
       public List<FundRaisePost>findByIsApprove(boolean isApprove, Sort sort);
       public Page<FundRaisePost> findByIsApprove(boolean isApprove, Pageable pageable);
+
+      public Page<FundRaisePost> findByUserId(Integer userid,Pageable pageable);
 }

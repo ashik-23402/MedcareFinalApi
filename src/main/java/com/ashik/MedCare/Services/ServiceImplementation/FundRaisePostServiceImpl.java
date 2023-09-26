@@ -143,13 +143,13 @@ public class FundRaisePostServiceImpl implements FundraisePostService {
 
         Page<FundRaisePost> byIsApprove = fundRaisePostRepository.findByIsApprove(approve, pageable);
 
-        if(byIsApprove==null){
-            System.out.println("null value got from repository");
-
-        }
-        else {
-            System.out.println(byIsApprove);
-        }
+//        if(byIsApprove==null){
+//            System.out.println("null value got from repository");
+//
+//        }
+//        else {
+//            System.out.println(byIsApprove);
+//        }
 
         List<FundRaisePostDto> collect = byIsApprove.stream().map((post) -> FundRaisePostMapper.PostToDto(post, new FundRaisePostDto())).collect(Collectors.toList());
 
@@ -164,6 +164,33 @@ public class FundRaisePostServiceImpl implements FundraisePostService {
         fundPostPage.setTotalPages(byIsApprove.getTotalPages());
         fundPostPage.setTotaleElements(byIsApprove.getNumberOfElements());
 
+
+
+        return fundPostPage;
+    }
+
+    @Override
+    public FundPostPage getAllPostByUserIdAndApprove(Integer userid, Integer pageSize, Integer pageNumber, String sortBy, String sortDir, Boolean approved) {
+
+        Sort sort = sortDir.equalsIgnoreCase("asc")? Sort.by(sortBy).ascending():Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
+
+        Page<FundRaisePost> byUserId = fundRaisePostRepository.findByUserId(userid, pageable);
+
+        List<FundRaisePost> collect = byUserId.stream().filter((post) -> post.isApprove() == approved).collect(Collectors.toList());
+
+        List<FundRaisePostDto> collect1 = collect.stream().map((post) -> FundRaisePostMapper.PostToDto(post, new FundRaisePostDto())).collect(Collectors.toList());
+
+        List<FundRaiseResponse> collect2 = collect1.stream().map((post) -> FundRaisePostMapper.dtoToResponse(post, new FundRaiseResponse())).collect(Collectors.toList());
+
+
+        FundPostPage fundPostPage = new FundPostPage();
+        fundPostPage.setContent(collect2);
+        fundPostPage.setPageNumber( byUserId .getNumber());
+        fundPostPage.setLastPage( byUserId .isLast());
+        fundPostPage.setPageSize( byUserId .getSize());
+        fundPostPage.setTotalPages( byUserId .getTotalPages());
+        fundPostPage.setTotaleElements( byUserId .getNumberOfElements());
 
 
         return fundPostPage;

@@ -219,5 +219,23 @@ public class FundRaisPostController {
     }
 
 
+    @GetMapping("/getallPostByuserWithSortAndPage/{userId}/{approve}")
+    public ResponseEntity<?> getallFundPostbyUserIdwithSortAndPage( @RequestParam(name = "pageNumber",defaultValue ="0") Integer pageNumber,
+
+                                                                    @RequestParam(name = "pageSize",defaultValue = "1") Integer pageSize,
+
+                                                                    @RequestParam(name = "SortBy" ,defaultValue = "createdDate") String SortBy,
+                                                                    @RequestParam(name = "SortDir",defaultValue = "desc") String SortDir,
+                                                                    @PathVariable boolean approve, @PathVariable Integer userId){
+
+
+        FundPostPage allPostByUserIdAndApprove = fundraisePostService.getAllPostByUserIdAndApprove(userId, pageSize, pageNumber, SortBy, SortDir, approve);
+
+        return new ResponseEntity<>(allPostByUserIdAndApprove,HttpStatus.OK);
+
+
+    }
+
+
 
 }
