@@ -38,7 +38,7 @@ public class AppConfig {
 
                                                                 CorsConfiguration cfg = new CorsConfiguration();
                                                                 cfg.setAllowedOrigins(
-                                                                        List.of("http://localhost:3000/","*","https://medcare-testing.netlify.app/")
+                                                                        List.of("https://medcare-testing.netlify.app/")
                                                                 );
 
 //                                                                cfg.setAllowedOrigins(Collections.singletonList("*"));
