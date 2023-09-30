@@ -268,8 +268,32 @@ public class BloodDonatePostServiceImpl implements BloodDonatePostServices {
         return bloodDonatePostPageResponse;
     }
 
+    @Override
+    public BloodDonatePostPageResponse getallbybloodgroup(String bloodgroup, Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
 
 
+        Sort sort = sortDir.equalsIgnoreCase("asc")? Sort.by(sortBy).ascending():Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNumber,pageSize,sort);
+
+        Page<BloodDonatePost> byUpazila = bloodDonatePostRepository.findByBloodGroup(bloodgroup,pageable);
+
+        List<BloodDonatePostDto> collectdto = byUpazila.stream().map((post) -> Mapper.postToDto(post)).collect(Collectors.toList());
+        List<BloodDonatePostResponse> res = collectdto.stream().map((postdto) -> Mapper.bloodDonatePostResponseMapper(postdto, postdto.getUser())).collect(Collectors.toList());
+
+        BloodDonatePostPageResponse bloodDonatePostPageResponse = new BloodDonatePostPageResponse();
+
+        bloodDonatePostPageResponse.setContent(res);
+        bloodDonatePostPageResponse.setPageNumber(byUpazila.getNumber());
+        bloodDonatePostPageResponse.setPageSize(byUpazila.getSize());
+        bloodDonatePostPageResponse.setTotaleElements((int) byUpazila.getTotalElements());
+        bloodDonatePostPageResponse.setTotalPages(byUpazila.getTotalPages());
+        bloodDonatePostPageResponse.setLastPage(byUpazila.isLast());
+
+
+        return bloodDonatePostPageResponse;
+
+
+    }
 
 
 }

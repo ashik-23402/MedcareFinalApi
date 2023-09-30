@@ -38,6 +38,6 @@ public interface BloodDonatePostServices {
 
     BloodDonatePostPageResponse getallbyDistrictDivisionUpazilla(String district,String division,String upazila,Integer pageNumber, Integer pageSize,String sortBy, String sortDir);
 
-
+    BloodDonatePostPageResponse getallbybloodgroup(String bloodgroup,Integer pageNumber, Integer pageSize,String sortBy, String sortDir);
 
 }

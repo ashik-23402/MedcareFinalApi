@@ -264,6 +264,27 @@ public class BloodDonatePostController {
 
 
 
+    @GetMapping("/bloodDonatePost/filterByBloodGroup/{bloodgroup}")
+    public ResponseEntity<BloodDonatePostPageResponse> FilterBloodDonatePostBybloodGroup(
+            @RequestParam(name = "pageNumber",defaultValue ="0") Integer pageNumber,
+            @RequestParam(name = "pageSize",defaultValue = "1") Integer pageSize,
+            @RequestParam(name = "SortBy" ,defaultValue = "createdDate") String SortBy,
+            @RequestParam(name = "SortDir",defaultValue = "desc") String SortDir,
+            @PathVariable String bloodgroup
+
+
+
+    ){
+
+        BloodDonatePostPageResponse bloodDonatePostPageResponse = bloodDonatePostServices.getallbybloodgroup(bloodgroup.toLowerCase(), pageNumber, pageSize, SortBy, SortDir);
+
+        return new ResponseEntity<BloodDonatePostPageResponse>(bloodDonatePostPageResponse,HttpStatus.OK);
+    }
+
+
+
+
+
 
 
 
